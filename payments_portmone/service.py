@@ -130,10 +130,21 @@ class PortmoneService(BasePortmoneService):
         result = self._make_request(self.endpoint, payload)
         if result:
             try:
-                payment: dict = result[0]
+                raw_payment: dict = result[0]
             except IndexError:
                 logger.error(f"Portmone payment {bill_id} is not found")
                 return None
+            payment = {}
+            known_props = [
+                'status', 'description', 'pay_date', 'pay_order_date', 'payee_export_date',
+                'shopBillId', 'shopOrderNumber', 'billAmount',
+                'attribute1', 'attribute2', 'attribute3', 'attribute4', 'attribute5',
+                'commission', 'payee_export_flag', 'chargeback', 'authCode',
+                'cardMask', 'token', 'gateType', 'errorCode', 'errorMessage'
+            ]
+            for prop in known_props:
+                if prop in raw_payment:
+                    payment[prop] = raw_payment[prop]
             try:
                 return PortmonePayment(**payment)
             except Exception as error:
