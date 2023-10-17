@@ -72,5 +72,6 @@ class PortmoneProvider(BasicProvider):
                     return redirect(payment.get_success_url())
         else:
             payment.change_status(PaymentStatus.ERROR, message=form.cleaned_data.get("RESULT", "Unknown error"))
+            payment.save()
 
         return redirect(payment.get_failure_url())
