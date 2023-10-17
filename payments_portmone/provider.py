@@ -67,6 +67,7 @@ class PortmoneProvider(BasicProvider):
                     payment.captured_amount = portmone_payment.billAmount
                 payment.extra_data = {"token": portmone_payment.token}
                 payment.change_status(new_status)
+                payment.save()
                 if portmone_payment.is_paid:
                     return redirect(payment.get_success_url())
         else:
